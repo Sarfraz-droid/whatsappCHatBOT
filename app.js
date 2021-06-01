@@ -7,40 +7,41 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const B = {
   friday: [
-    "9-10:40 Phy lab",
-    "10:40-12:20 Chem lab",
-    "12:20-1:10 FOC",
-    "1:40-2:30 CS",
-    "2:30-3:20 BME",
+    "*09:00AM - 10:40AM* Phy lab",
+    "*10:40AM - 12:20PM* Chem lab",
+    "*02:00PM - 02:50PM* FOC",
+    "*02:50PM - 03:40PM* CS",
+    "*03:40PM - 04:30PM* BME",
   ],
   thursday: [
-    "9-9:50 CS",
-    "9:50-10:40 BME",
-    "10:40-11:30 FOC",
-    "11:30-12:20 MA",
+    "*09:00AM - 10:00AM* CS",
+    "*10:00AM - 11:00AM* BME",
+    "*11:00AM - 12:00AM* FOC",
+    "*12:00 AM - 01:00PM* MA",
   ],
   wednesday: [
-    "9-9:50 BEE",
-    "9:50-10:40 CH",
-    "10:40-11:30 PH",
-    "11:30-12:20 MA",
-    "12:20-1:10 BME",
-    "1:10-2:30 CS",
-    "2:30-3:20 FC",
+    "*09:00AM - 10:00AM*  BEE",
+    "*10:00AM - 11:00AM* CH",
+    "*11:00AM - 12:00AM* PH",
+    "*12:00 AM - 01:00PM* MA",
+    "*2:00PM - 3:00PM* BME",
+    "*3:00PM - 4:00PM* CS",
+    "*4:00PM - 5:00PM* FOC",
   ],
   tuesday: [
-    "9-9:50 BEE",
-    "9:50-10:40 CH",
-    "10:40-11:30 PH",
-    "11:30-12:20 MA",
-    "1:40-4:10 GRAPHICS LAB",
+    "*09:00AM - 10:00AM* BEE",
+    "*10:00AM - 11:00AM* CH",
+    "*11:00AM - 12:00AM* PH",
+    "*12:00 AM - 01:00PM*  MA",
+    "*02:00PM- 05:20PM* GRAPHICS LAB",
   ],
   monday: [
-    "9-9:50 BEE",
-    "9:50-10:40 CH",
-    "10:40-11:30 PH",
-    "11:30-12:20 MA",
-    "1:40-4:10 EM LAB",
+    "*09:00AM - 10:00AM* BEE",
+    "*10:00AM - 11:00AM* CH",
+    "*11:00AM - 12:00AM* PH",
+    "*12:00AM - 01:00PM* MA",
+    "*02:00PM - 03:40PM* EM LAB",
+    "*03:40 PM - 05:20PM* LANG LAB",
   ],
   saturday: ["Bhai Bot se bhi gire hue kaam mt kr pls"],
   sunday: ["Bhai Bot se bhi gire hue kaam mt kr pls"],
@@ -56,13 +57,13 @@ const work =
   "Available Jobs : \n \n Chai Wala - 10-100 Rs \n \n TCS Employee- 0-50 Rs \n \n Electrician - 50-200 Rs \n \n WebDev Intern - 100-1000 Rs";
 
 const Day = [
+  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
   "saturday",
-  "sunday",
 ];
 
 const namehandlers = [
@@ -75,7 +76,7 @@ const namehandlers = [
   "invest",
   "kick",
   "kill",
-  "pickup"
+  "pickup",
 ];
 
 mongoose.connect(process.env.URL, {
@@ -114,17 +115,17 @@ venom
 function start(client) {
   client.onMessage((message) => {
     if (message.isGroupMsg && message.chat.name.indexOf("HASHes") !== -1) {
-        console.log(message.chat.name);
-        console.log("IN GAMES");
+      console.log(message.chat.name);
     } else {
-        console.log(message);
+      console.log(message);
       var d = new Date();
       var data = message.body;
       var blocks = data.split(" ");
       var sendMessage = "";
-      var day = d.getDay() - 1;
+      var day = d.getDay();
       var textmsg = "";
       var daystr = Day[day];
+      console.log(daystr);
       var getlink;
       var name = "";
       var senderno = _.trim(message.sender.id, "@c.us");
@@ -151,7 +152,7 @@ function start(client) {
         case "b":
           if (getlink === undefined) sendMessage = B[daystr];
           else sendMessage = B.link[getlink];
-          add = " | ";
+          add = "\n\n";
           break;
         case "abd":
           sendMessage = ["abdullah chutiya h"];
@@ -178,13 +179,14 @@ function start(client) {
           sendMessage = ["Manish chutiya h"];
           break;
         case "ayaz":
-          client.sendImageAsSticker(message.from,'Ayaz.jpg')
-          .then((result) => {
-            console.log("Result: ", result); //return object success
-          })
-          .catch((erro) => {
-            console.error("Error when sending: ", erro); //return object error
-          });
+          client
+            .sendImageAsSticker(message.from, "Ayaz.jpg")
+            .then((result) => {
+              console.log("Result: ", result); //return object success
+            })
+            .catch((erro) => {
+              console.error("Error when sending: ", erro); //return object error
+            });
           break;
         case "meme":
           let url = "wholesomememes";
@@ -227,8 +229,10 @@ function start(client) {
               });
           });
           break;
-          case "pickup":
-            axios.get("https://fierce-temple-86254.herokuapp.com/pick-up").then(function (response) {
+        case "pickup":
+          axios
+            .get("https://fierce-temple-86254.herokuapp.com/pick-up")
+            .then(function (response) {
               sendMessage = ["Dear ", name, ",", response.data.pickup];
               console.log(sendMessage);
               sendMessage.forEach(function (txt) {
@@ -243,7 +247,7 @@ function start(client) {
                   console.error("Error when sending: ", erro); //return object error
                 });
             });
-            break;
+          break;
         case "slap":
           let msg = _.trim(message.sender.id, "@c.us") + " Slapped " + name;
           client
@@ -315,11 +319,12 @@ function start(client) {
         case "money":
           Money.findOne({ name: senderno }, function (err, response) {
             console.log(response);
-            if (response === null) {
+            if (response === null || response == undefined) {
               const newMoney = new Money({
                 name: senderno,
                 money: 1500,
                 daily: String(new Date()),
+                saving: 0,
               });
               newMoney.save();
               client
@@ -338,11 +343,15 @@ function start(client) {
                 });
             } else {
               console.log(response);
+              let save = 0;
+              if (response.saving !== undefined) {
+                save = response.saving.toFixed(2);
+              }
               const msg =
                 "Your balance is : " +
                 response.money.toFixed(2) +
                 "\nYour savings account balance is : " +
-                response.saving.toFixed(2);
+                save;
               client
                 .reply(message.from, msg, message.id)
                 .then((result) => {
@@ -1152,15 +1161,17 @@ function start(client) {
       }
       console.log(textmsg);
 
-      if (sendMessage != "") {
-        client
-          .sendText(message.from, textmsg)
-          .then((result) => {
-            console.log("Result: ", result); //return object success
-          })
-          .catch((erro) => {
-            console.error("Error when sending: ", erro); //return object error
-          });
+      if (message.isGroupMsg && message.chat.name.indexOf("JAMIANS") !== -1) {
+        if (sendMessage != "") {
+          client
+            .reply(message.from, textmsg, message.id)
+            .then((result) => {
+              console.log("Result: ", result); //return object success
+            })
+            .catch((erro) => {
+              console.error("Error when sending: ", erro); //return object error
+            });
+        }
       }
     }
   });

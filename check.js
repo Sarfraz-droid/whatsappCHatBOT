@@ -4,7 +4,7 @@ const axios = require('axios');
 const mongoose = require("mongoose");
 require('dotenv').config()
 
-mongoose.connect(process.env.URL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.URL, { useNewUrlParser: true, useUnifiedTopology: true }).catch(err => console.log(err));
 
 var stealCooldown = String(new Date());
 
@@ -25,11 +25,6 @@ const Money = mongoose.model("moneys", moneySchema);
 
 const head = mongoose.model("moneyhead", moneyhead);
 
-var d = new Date();
-
-var day = d.getDay() - 1;
-
-console.log(d.getDay());
 
 setInterval(function() {
 
