@@ -5,79 +5,6 @@ var _ = require("lodash");
 const axios = require("axios");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const B = {
-  friday: [
-    "*09:00AM - 10:40AM* Phy lab",
-    "*10:40AM - 12:20PM* Chem lab",
-    "*02:00PM - 02:50PM* FOC",
-    "*02:50PM - 03:40PM* CS",
-    "*03:40PM - 04:30PM* BME",
-  ],
-  thursday: [
-    "*09:00AM - 10:00AM* CS",
-    "*10:00AM - 11:00AM* BME",
-    "*11:00AM - 12:00AM* FOC",
-    "*12:00 AM - 01:00PM* MA",
-  ],
-  wednesday: [
-    "*09:00AM - 10:00AM*  BEE",
-    "*10:00AM - 11:00AM* CH",
-    "*11:00AM - 12:00AM* PH",
-    "*12:00 AM - 01:00PM* MA",
-    "*2:00PM - 3:00PM* BME",
-    "*3:00PM - 4:00PM* CS",
-    "*4:00PM - 5:00PM* FOC",
-  ],
-  tuesday: [
-    "*09:00AM - 10:00AM* BEE",
-    "*10:00AM - 11:00AM* CH",
-    "*11:00AM - 12:00AM* PH",
-    "*12:00 AM - 01:00PM*  MA",
-    "*02:00PM- 05:20PM* GRAPHICS LAB",
-  ],
-  monday: [
-    "*09:00AM - 10:00AM* BEE",
-    "*10:00AM - 11:00AM* CH",
-    "*11:00AM - 12:00AM* PH",
-    "*12:00AM - 01:00PM* MA",
-    "*02:00PM - 03:40PM* EM LAB",
-    "*03:40 PM - 05:20PM* LANG LAB",
-  ],
-  saturday: ["Bhai Bot se bhi gire hue kaam mt kr pls"],
-  sunday: ["Bhai Bot se bhi gire hue kaam mt kr pls"],
-  link: {
-    bme: ["BME LINK : ", "https://meet.google.com/jjt-maem-qfy"],
-    foc: ["FOC LINK :", "https://meet.google.com/djo-ijut-wiw"],
-    phy: ["PHYSICS LINK :", "https://meet.google.com/nee-gwok-zun"],
-    // "chem": ["CHEMISTRY LINK : ",""]
-  },
-};
-
-const work =
-  "Available Jobs : \n \n Chai Wala - 10-100 Rs \n \n TCS Employee- 0-50 Rs \n \n Electrician - 50-200 Rs \n \n WebDev Intern - 100-1000 Rs";
-
-const Day = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
-
-const namehandlers = [
-  "roast",
-  "compliment",
-  "slap",
-  "define",
-  "steal",
-  "meme",
-  "invest",
-  "kick",
-  "kill",
-  "pickup",
-];
 
 mongoose.connect(process.env.URL, {
   useNewUrlParser: true,
@@ -98,6 +25,18 @@ const moneySchema = {
 const moneyhead = {
   lottery: String,
 };
+
+const shopSchema = {
+  id: Number,
+  title: String,
+  desc: String,
+  const: Number,
+  price: Number,
+};
+
+const Shop = mongoose.model("shop", shopSchema);
+
+const ShopRes = mongoose.model("shopreserve", shopSchema);
 
 const Money = mongoose.model("moneys", moneySchema);
 
@@ -149,45 +88,6 @@ function start(client) {
 
       let add = "";
       switch (blocks[0]) {
-        case "b":
-          if (getlink === undefined) sendMessage = B[daystr];
-          else sendMessage = B.link[getlink];
-          add = "\n\n";
-          break;
-        case "abd":
-          sendMessage = ["abdullah chutiya h"];
-          break;
-        case "ashhar":
-          sendMessage = ["ashhar chutiya h"];
-          break;
-        case "piyush":
-          sendMessage = ["piyush chutiya h"];
-          break;
-        case "ijlal":
-          sendMessage = ["Ijlal piro piroguramor"];
-          break;
-        case "sara":
-          sendMessage = ["Dimdi Bully mt kro plz"];
-          break;
-        case "sahim":
-          sendMessage = ["Ma'am ni patengi.. teri aukat se bahar h"];
-          break;
-        case "edpub":
-          sendMessage = ["LAL BIHARI chutiya h"];
-          break;
-        case "spam":
-          sendMessage = ["Manish chutiya h"];
-          break;
-        case "ayaz":
-          client
-            .sendImageAsSticker(message.from, "Ayaz.jpg")
-            .then((result) => {
-              console.log("Result: ", result); //return object success
-            })
-            .catch((erro) => {
-              console.error("Error when sending: ", erro); //return object error
-            });
-          break;
         case "meme":
           let url = "wholesomememes";
           switch (_.camelCase(blocks[1])) {
@@ -229,6 +129,7 @@ function start(client) {
               });
           });
           break;
+
         case "pickup":
           axios
             .get("https://fierce-temple-86254.herokuapp.com/pick-up")
@@ -316,6 +217,7 @@ function start(client) {
                 });
             });
           break;
+
         case "money":
           Money.findOne({ name: senderno }, function (err, response) {
             console.log(response);
@@ -347,19 +249,21 @@ function start(client) {
               if (response.saving !== undefined) {
                 save = response.saving.toFixed(2);
               }
-              const msg =
-                "Your balance is : " +
-                response.money.toFixed(2) +
-                "\nYour savings account balance is : " +
-                save;
-              client
-                .reply(message.from, msg, message.id)
-                .then((result) => {
-                  console.log("Result: ", result);
-                })
-                .catch((erro) => {
-                  console.error("Error when sending: ", erro);
-                });
+                const msg =
+                  "Your balance is : " +
+                  response.money.toFixed(2) +
+                  "\nYour savings account balance is : " +
+                  save;
+
+                client
+                  .reply(message.from, msg, message.id)
+                  .then((result) => {
+                    console.log("Result: ", result);
+                  })
+                  .catch((erro) => {
+                    console.error("Error when sending: ", erro);
+                  });
+              // }
             }
           });
           break;
@@ -1176,63 +1080,3 @@ function start(client) {
     }
   });
 }
-
-// let senderno = '918317016727';
-
-// Money.findOne({
-//     name: senderno
-// }, function(err, res) {
-//     if (res.daily === undefined) {
-//         Money.findOneAndUpdate({ name: senderno }, {
-//                 $inc: {
-//                     'money': 100
-//                 },
-//                 $set: {
-//                     'daily': toString(new Date())
-//                 },
-//             },
-//             function(erro, response) {
-//                 if (!erro) {
-//                     client.reply(message.from, "You got 100 bucks as daily bonus.. Niceeee", message.id)
-//                         .then((result) => {
-//                             console.log('Result: ', result);
-//                         })
-//                         .catch((erro) => {
-//                             console.error('Error when sending: ', erro);
-//                         });
-
-//                 }
-//             })
-//     } else {
-
-//         console.log(res.daily);
-
-//         let datadate = new Date(res.daily);
-//         var today = new Date();
-
-//         let hours = Math.abs(today - datadate) / 36e5;
-//         console.log(hours);
-//         console.log(String(today));
-
-//         if (hours > 6) {
-//             Money.findOneAndUpdate({
-//                     name: senderno
-//                 }, {
-//                     $inc: {
-//                         'money': 100
-//                     },
-//                     $set: {
-//                         'daily': String(today)
-//                     },
-//                 },
-//                 function(e, response) {
-//                     console.log("You got 100 bucks as daily bonus.. Niceeee");
-//                 });
-//         } else {
-//             console.log("COmeback");
-//         }
-//     }// });
-//     }// });
-//     }// });
-
-// }, 10 * 60 * 1000);
