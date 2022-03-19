@@ -1060,7 +1060,7 @@ function start(client) {
       }
       switch (blocks[0]) {
         case "ashhar":
-          textmsg = "Ashhar Chutiya h";
+          textmsg = "Ashhar";
           break;
       }
       console.log(textmsg);
